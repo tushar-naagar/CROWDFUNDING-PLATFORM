@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Crowdfunding Platform</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+
+    <h1>Crowdfunding Platform</h1>
+
+    <div class="form">
+        <h2>Create Project</h2>
+        <input id="title" placeholder="Project Title">
+        <input id="goal" type="number" placeholder="Funding Goal">
+        <button onclick="addProject()">Create Project</button>
+    </div>
+
+    <div id="projects"></div>
+
+    <script>
+        let projects = [];
+
+        // Create New Project
+        function addProject() {
+            const title = document.getElementById("title").value;
+            const goal = Number(document.getElementById("goal").value);
+
+            if (title === "" || goal <= 0) {
+                alert("Please enter valid project details!");
+                return;
+            }
+
+            projects.push({
+                title: title,
+                goal: goal,
+                raised: 0
+            });
+
+            document.getElementById("title").value = "";
+            document.getElementById("goal").value = "";
+
+            renderProjects();
+        }
+
+        // Donate Function
+        function donate(index) {
+            projects[index].raised += 100;
+            renderProjects();
+        }
+
+        // Display Projects
+        function renderProjects() {
+            const projectContainer = document.getElementById("projects");
+
+            projectContainer.innerHTML = "";
+
+            projects.forEach((project, index) => {
+
+                let percentage = (project.raised / project.goal) * 100;
+
+                if (percentage > 100) {
+                    percentage = 100;
+                }
+
+                projectContainer.innerHTML += `
+        <div class="card">
+            <h3>${project.title}</h3>
+
+            <p><strong>Funding Goal:</strong> ₹${project.goal}</p>
+            <p><strong>Raised:</strong> ₹${project.raised}</p>
+
+            <div class="progress-container">
+                <div class="progress" style="width:${percentage}%"></div>
+            </div>
+
+            <p>${percentage.toFixed(1)}% Funded</p>
+
+            <button class="donate-btn" onclick="donate(${index})">
+                Donate ₹100
+            </button>
+        </div>
+        `;
+            });
+        }
+    </script>
+</body>
+
+</html>
